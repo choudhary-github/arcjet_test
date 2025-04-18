@@ -3,6 +3,7 @@ import express from "express";
 import "dotenv/config";
 
 const app = express();
+app.set("trust proxy", true);
 const port = 3000;
 console.log();
 
