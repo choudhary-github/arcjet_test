@@ -3,9 +3,8 @@ import express from "express";
 import "dotenv/config";
 
 const app = express();
-app.set("trust proxy", true);
+// app.set("trust proxy", true);
 const port = 3000;
-console.log();
 
 const aj = arcjet({
   key: process.env.ARCJET_KEY,
@@ -14,20 +13,20 @@ const aj = arcjet({
     shield({ mode: "LIVE" }),
     detectBot({
       mode: "LIVE",
-      allow: ["CATEGORY:SEARCH_ENGINE","POSTMAN"],
+      allow: ["CATEGORY:SEARCH_ENGINE", "POSTMAN"],
     }),
     tokenBucket({
       mode: "LIVE",
-      refillRate: 5, // Refill 5 tokens per interval
-      interval: 10, // Refill every 10 seconds
-      capacity: 10, // Bucket capacity of 10 tokens
+      refillRate: 5,
+      interval: 10,
+      capacity: 10,
     }),
   ],
 });
 
 app.get("/", async (req, res) => {
   const decision = await aj.protect(req, { requested: 5 }); // Deduct 5 tokens from the bucket
-  console.log("Arcjet decision", decision.conclusion);
+  console.log("Arcjet decision", decision.conclusion,decision.id);
 
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
